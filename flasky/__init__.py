@@ -8,17 +8,35 @@ app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 
 
 db = MongoEngine(app)
-
+from flasky.models import Video
 
 @app.route('/<id>')
 def hello_world(id):
-    cmd = "/usr/sbin/netstat -p tcp -f inet"
-    output = subprocess.check_output(["youtube-dl", "-g", id]) 
-    return output
+	vid=Video.objects.all()
+	for v in vid:
+		if v.vid==id and len(v.url)>5:
+			return v.url
+	output = subprocess.check_output(["youtube-dl", "-g", id])
+	video=Video(title="id", vid=id, url=output)
+	video.save()
+	return output
+    # output = subprocess.check_output(["youtube-dl", "-g", id]) 
+    # return output
 
 @app.route('/img/<id>')
 def hello_img(id):
-    return  
+	#video=Video(title="id", vid="id")
+	#video.save()
+	vid=Video.objects.all()
+	for v in vid:
+		print v.id
+		print v.url
+		if v.vid==id and len(v.url)>5:
+			return v.url
+	output = subprocess.check_output(["youtube-dl", "-g", id])
+	video=Video(title="id", vid=id, url=output)
+	video.save()
+	return output
 
 if __name__ == '__main__':
     app.debug = True
