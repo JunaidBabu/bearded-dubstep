@@ -6,6 +6,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+flask/
 .Python
 env/
 bin/
@@ -51,4 +52,5 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
 
