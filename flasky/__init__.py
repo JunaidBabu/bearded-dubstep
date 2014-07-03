@@ -1,5 +1,6 @@
 from flask import Flask
 import subprocess
+import time
 from flask.ext.mongoengine import MongoEngine
 
 app = Flask(__name__)
@@ -10,12 +11,21 @@ app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 db = MongoEngine(app)
 from flasky.models import Video
 
+def extract(raw_string, start_marker, end_marker):
+    start = raw_string.index(start_marker) + len(start_marker)
+    end = raw_string.index(end_marker, start)
+    return raw_string[start:end]
+ 
 @app.route('/<id>')
 def hello_world(id):
 	vid=Video.objects.all()
 	for v in vid:
 		if v.vid==id and len(v.url)>5:
-			return v.url
+			exptime = extract(v.url, "expire=", "&")
+			if int(exptime)-int(time.time()) > 0:
+				return v.url
+			break
+
 	output = subprocess.check_output(["youtube-dl", "-g", id])
 	video=Video(title="id", vid=id, url=output)
 	video.save()
