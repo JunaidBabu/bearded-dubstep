@@ -33,7 +33,7 @@ def hello_world(id):
     # output = subprocess.check_output(["youtube-dl", "-g", id]) 
     # return output
 
-@app.route('/img/<id>')
+@app.route('/image/<id>')
 def hello_img(id):
 	#video=Video(title="id", vid="id")
 	#video.save()
