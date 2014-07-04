@@ -16,14 +16,21 @@ def extract(raw_string, start_marker, end_marker):
     end = raw_string.index(end_marker, start)
     return raw_string[start:end]
  
-@app.route('/<id>')
+@app.route('/v/<id>')
 def hello_world(id):
 	vid=Video.objects.all()
 	for v in vid:
 		if v.vid==id and len(v.url)>5:
 			exptime = extract(v.url, "expire=", "&")
+			print "exp "+ str(exptime)
+			print "cur "+ str(time.time())
 			if int(exptime)-int(time.time()) > 0:
+				print int(exptime)-int(time.time())
 				return v.url
+			else:
+				output = subprocess.check_output(["youtube-dl", "-g", id])
+				return output
+				Video.objects.filter(vid=v.vid).update(set__url="value")
 			break
 
 	output = subprocess.check_output(["youtube-dl", "-g", id])
