@@ -29,8 +29,8 @@ def hello_world(id):
 				return v.url
 			else:
 				output = subprocess.check_output(["youtube-dl", "-g", id])
+				Video.objects.filter(vid=v.vid).update(set__url=output)
 				return output
-				Video.objects.filter(vid=v.vid).update(set__url="value")
 			break
 
 	output = subprocess.check_output(["youtube-dl", "-g", id])
