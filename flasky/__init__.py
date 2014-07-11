@@ -21,7 +21,10 @@ def hello_world(id):
 	vid=Video.objects.all()
 	for v in vid:
 		if v.vid==id and len(v.url)>5:
-			exptime = extract(v.url, "expire=", "&")
+			try:
+				exptime = extract(v.url, "expire=", "&")
+			except:
+				break
 			print "exp "+ str(exptime)
 			print "cur "+ str(time.time())
 			if int(exptime)-int(time.time()) > 0:
@@ -35,7 +38,10 @@ def hello_world(id):
 
 	output = subprocess.check_output(["youtube-dl", "-g", id])
 	video=Video(title="id", vid=id, url=output)
-	video.save()
+	try:
+		video.save()
+	except:
+		Video.objects.filter(vid=id).update(set__url=output)
 	return output
 
 @app.route('/image/<id>')
